@@ -20,7 +20,7 @@ function gesture_enqueue_scripts() {
 		wp_register_script( 'gestures_init',  plugins_url( 'js/init.js', __FILE__ ), array('jquery'), null, true );
 				
 		// Now we can localize the script with our data.
-		$gestures_array = get_option( 'gestures_settings' , array('container' => '#page', 'destination' => get_site_url() ) );
+		$gestures_array = get_option( 'gestures_settings' , array('container' => '#content', 'destination' => get_site_url() ) );
 		wp_localize_script( 'gestures_init', 'gestures', $gestures_array );
 
 		// Enqueue the scripts.
@@ -69,6 +69,13 @@ function gestures_settings_init(  ) {
 	);
 
 	add_settings_field( 
+		'mobile', 
+		__( 'Only switch on mobile', 'gestures' ), 
+		'gestures_mobile_render', 
+		'gestures_settings', 
+		'gestures_settings_section' 
+	);
+	add_settings_field( 
 		'container', 
 		__( 'Content container identifier (eg #page)', 'gestures' ), 
 		'gestures_container_render', 
@@ -88,9 +95,17 @@ function gestures_settings_init(  ) {
 }
 
 
+function gestures_mobile_render(  ) { 
+
+	$options = get_option( 'gestures_settings' , array('mobile' => '#content', 'destination' => get_site_url() ));
+	?>
+	<input type='checkbox' name='gestures_settings[mobile]' value='mobile'<?php if (isset($options['mobile'])){ echo "checked=checked"; }else{ echo " "; } ?>>
+	<?php
+
+}
 function gestures_container_render(  ) { 
 
-	$options = get_option( 'gestures_settings' , array('container' => '#page', 'destination' => get_site_url() ));
+	$options = get_option( 'gestures_settings' , array('container' => '#content', 'destination' => get_site_url() ));
 	?>
 	<input type='text' name='gestures_settings[container]' value='<?php echo $options['container']; ?>'>
 	<?php
@@ -100,7 +115,7 @@ function gestures_container_render(  ) {
 
 function gestures_destination_render(  ) { 
 
-	$options = get_option( 'gestures_settings' , array('destination' => '#page', 'destination' => get_site_url() ));
+	$options = get_option( 'gestures_settings' , array('destination' => '#content', 'destination' => get_site_url() ));
 	?>
 	<input type='text' name='gestures_settings[destination]' value='<?php echo $options['destination']; ?>'>
 	<?php
